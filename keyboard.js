@@ -1,3 +1,23 @@
+/*
+	Copyright 2017 EyeBook888
+
+	This file is part of vocabulary_game.
+
+    vocabulary_game is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    vocabulary_game is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with vocabulary_game. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 function virtualKeyboard(){
 	//virtual Keyboard object
 
