@@ -45,6 +45,12 @@ function dictionary(){
 	this.getById = function(id){
 		return this.vocabulary[id];
 	}
+
+	this.loadByjsonObject = function(object){
+		for (var i = 0; i < object.words.length; i++) {
+			this.add(object.words[i][0], object.words[i][1]);
+		};
+	}
 }
 
 function Vocabulary(lang0, lang1){

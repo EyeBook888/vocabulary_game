@@ -18,6 +18,19 @@
 */
 
 
+function loadJson(file, processFunction){ // load a json file and return a Object to the process Function
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			var jsonString = this.responseText;
+			var jsObject = JSON.parse( jsonString );
+			processFunction(jsObject);
+		}
+	};
+	xhttp.open("GET", "./vocabularyList.json", true);
+	xhttp.send();
+}
+
 
 
 function progressBar(max){
@@ -150,72 +163,18 @@ var game = new Array();
 game.canvas = document.getElementById("gameDisplay");
 
 game.words = new dictionary();
-/*
-game.words.add("Hallo", "Hello");
-game.words.add("suchen", "search");
-game.words.add("Ja", "yes");
-game.words.add("Nein", "no");
-game.words.add("Jahr", "year");
-game.words.add("und", "and");
-game.words.add("Baum", "tree");
-game.words.add("Haus", "house");
-game.words.add("kaufen", "buy");
-game.words.add("gehen", "walk");
-game.words.add("Ich", "I");
-game.words.add("Er", "He");
-game.words.add("Sie", "she");
-game.words.add("Du", "you");
-game.words.add("Charakterisierung", "characterization")
-game.words.add("Ich heiße ...", "My name is");
-game.words.add("Angestellter", "employee")
-game.words.add("Arbeiter", "worker")
-game.words.add("Arbeitgeber", "employer")
-game.words.add("Beruf", "job")
-game.words.add("Beschäftigung", "occupation")
-game.words.add("eine Firma leiten", "to run a firm")
-game.words.add("Pendler", "commuter")
-game.words.add("Ausbildung", "training")
-game.words.add("Ausbildungskurs", "training course")
-game.words.add("Bewerbung", "application")
-game.words.add("Facharbeiter", "skilled worker")
-game.words.add("Lebenslauf", "CV")
-game.words.add("Vorstellungsgespräch", "job interview")
-game.words.add("arbeitslos sein", "to be unemployed")
-game.words.add("kündigen", "to quit")
-*/
-game.words.add("Cousin, Cousine", "cousin")
-game.words.add("Ehefrau", "wife")
-game.words.add("Ehemann", "husband")
-game.words.add("Eltern", "parents")
-game.words.add("Enkel", "grandchild")
-game.words.add("Enkelsohn", "grandson")
-game.words.add("Enkeltochter", "granddaughter")
-game.words.add("Großmutter", "grandmother")
-game.words.add("Großvater", "grandfather")
-game.words.add("Kind", "child")
-game.words.add("Kinder", "children")
-game.words.add("Mutter", "mother")
 
 
-
-
-
-
-
-game.words.setIds();
 
 game.words.VocabularyCount = Array();
 
-game.currentVocabulary = game.words.getById(0);
 game.words.VocabularyCount[0] = 0;//unlock to more words
 game.words.VocabularyCount[1] = 0;
 //game.words.VocabularyCount[2] = 0;
 //game.words.VocabularyCount[3] = 0;
 //game.words.VocabularyCount[4] = 0;
 
-game.startTime = Date.now();
 game.timePerVocabularyLetter = 1200;
-game.timeForVocabulary = Math.max(game.timePerVocabularyLetter*game.currentVocabulary.lang1.length, 4000);
 
 game.levelUpAnimationStartTime = 0;
 
@@ -432,8 +391,27 @@ game.getNextVocabulary = function(){
 
 }
 
+game.start = function(){
+	this.words.setIds();
+	this.currentVocabulary = game.words.getById(0);//load the first vocabulary
+	
+	this.startTime = Date.now();//set the start time for the first vocabulary
 
-timer = window.setInterval(function(){game.update()}, 100);
+	this.timeForVocabulary = Math.max(game.timePerVocabularyLetter*game.currentVocabulary.lang1.length, 4000);//set the time for the first vocabulary
+
+	timer = window.setInterval(function(){game.update()}, 100);//start the update/draw function calls
+}
+
+
+
+
+
+
+//start the game after load the vocabulary list
+loadJson("vocabulary.json", function(object){
+	game.words.loadByjsonObject(object);//load the dictionary
+	game.start(); // start the game
+	})
 
 
 
