@@ -130,6 +130,10 @@ function nonLaplaceRandom(arra){//the Array contains points which says how likel
 state = new Array();
 state.WIDTH_AS_FIX_SIZE 	= 0;
 state.HEIGHT_AS_FIX_SIZE 	= 1;
+state.LOADING				= 2;
+state.SELECTION 			= 3;
+state.PLAYING 				= 4;
+
 
 
 function testNonLaplaceRandom(arra){
@@ -162,8 +166,14 @@ var game = new Array();
 
 game.canvas = document.getElementById("gameDisplay");
 
+game.canvas.addEventListener('touchstart', function(event){
+					game.onClick(event.touches[0].pageX, event.touches[0].pageY)});
+
+
+
 game.words = new dictionary();
 
+game.state = state.SELECTION;
 
 
 game.words.VocabularyCount = Array();
@@ -193,129 +203,161 @@ img.src = "./slime.png"
 game.opponent.stayImage = new Sprite(img);
 
 game.update = function(){
-	//adjust the size of the canvas
-	this.canvas.width = window.innerWidth*2;
-	this.canvas.height = window.innerHeight/2*2;
-
-	var context = this.canvas.getContext("2d");
-
-
-	context.fillStyle = "white"
-	context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
+	if(this.state == state.PLAYING){
+		//adjust the size of the canvas
+		this.canvas.width = window.innerWidth*2;
+		this.canvas.height = window.innerHeight/2*2;
+		this.canvas.style.height = "50%";//make the canvas halve screen
+		document.getElementById("keyboard").style.visibility = "visible";
 	
-
-	//draw Level Bar
-	//draw the level-up circle
-	percent = Math.min((Date.now() - this.levelUpAnimationStartTime)/700, 1)
-	context.strokeStyle = "#2E9AFE"
-	r 	= 255 - Math.round((1-percent)*(255-46 ))
-	g 	= 255 - Math.round((1-percent)*(255-154))
-	b 	= 255 - Math.round((1-percent)*(255-254))
-
-
-	context.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
-	context.lineWidth = 5
-	strokeCircle(context, 30, 30, percent*300 + 30)
-
-	context.strokeStyle = "black"
-
-
-	//draw the level background circle
-	context.fillStyle = "#2E9AFE"
-	drawCircle(context, 30, 30, 30)
-
-	context.fillStyle = "Black"
-	context.font="40px Georgia";
-	textWidth = context.measureText(this.player.level + "").width;
-	context.fillText(this.player.level, 30 - textWidth/2, 30+15)
-
-	game.player.levelProgress.draw(context, 65, 10, this.canvas.width-70, 40);
-
-
-
-	//draw you Avatar
-	game.player.stayImage.draw(context, 0, this.canvas.height/2, this.canvas.height*0.48);
-
-
-
-
-
-
-
-	//draw opponent Avatar
-	game.opponent.stayImage.draw(context, this.canvas.width-this.canvas.height*0.30, this.canvas.height*0.76, this.canvas.height*0.22);
-
-	//draw opponent speak bubble 
-	textWidth = context.measureText(this.currentVocabulary.lang0).width;
-
-	context.fillStyle = "#2E9AFE"
-	SpeakBubbleX = this.canvas.width-this.canvas.height*0.30-textWidth;
-	SpeakBubbleY = this.canvas.height*0.2;
-	drawSpeakBubble(context, SpeakBubbleX, SpeakBubbleY, textWidth + 40, this.canvas.width - this.canvas.height*0.20, this.canvas.height*0.90)
-	
-
-	//write the Vocabulary you have to translate
-	context.fillStyle = "black"
-	context.font="40px Georgia";
-	context.fillText(this.currentVocabulary.lang0, SpeakBubbleX +20, SpeakBubbleY +44)
-
-
-
-
-
-
-	//draw you Avatar
-	game.player.stayImage.draw(context, 0, this.canvas.height/2, this.canvas.height*0.48);
-
-	//measure the text you currently tipping
-	context.fillStyle = "black"
-	context.font="40px Georgia";
-	textWidth = Math.max(
-		context.measureText(this.currentVocabulary.lang1.toUpperCase()).width,
-		context.measureText(TipeHandler.currentText).width);
-
-
-
-
-	//draw your speak bubble
-	context.fillStyle = "#2E9AFE"
-	SpeakBubbleX = this.canvas.height*0.3;
-	SpeakBubbleY = this.canvas.height*0.4;
-	drawSpeakBubble(context, SpeakBubbleX, SpeakBubbleY, textWidth + 40, this.canvas.height*0.155, this.canvas.height*0.69)
+		var context = this.canvas.getContext("2d");
 	
 	
-	if(game.words.VocabularyCount[this.currentVocabulary.id] == null || game.words.VocabularyCount[this.currentVocabulary.id] == 0){
-		//if it is the fist time that you have this vocable 
-		context.fillStyle = "rgba(0, 0, 0, 0.3)"
+		context.fillStyle = "white"
+		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	
+		
+	
+		//draw Level Bar
+		//draw the level-up circle
+		percent = Math.min((Date.now() - this.levelUpAnimationStartTime)/700, 1)
+		context.strokeStyle = "#2E9AFE"
+		r 	= 255 - Math.round((1-percent)*(255-46 ))
+		g 	= 255 - Math.round((1-percent)*(255-154))
+		b 	= 255 - Math.round((1-percent)*(255-254))
+	
+	
+		context.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
+		context.lineWidth = 5
+		strokeCircle(context, 30, 30, percent*300 + 30)
+	
+		context.strokeStyle = "black"
+	
+	
+		//draw the level background circle
+		context.fillStyle = "#2E9AFE"
+		drawCircle(context, 30, 30, 30)
+	
+		context.fillStyle = "Black"
 		context.font="40px Georgia";
-		context.fillText(this.currentVocabulary.lang1.toUpperCase(), SpeakBubbleX+10, SpeakBubbleY+45)
+		textWidth = context.measureText(this.player.level + "").width;
+		context.fillText(this.player.level, 30 - textWidth/2, 30+15)
+	
+		game.player.levelProgress.draw(context, 65, 10, this.canvas.width-70, 40);
+	
+	
+	
+		//draw you Avatar
+		game.player.stayImage.draw(context, 0, this.canvas.height/2, this.canvas.height*0.48);
+	
+	
+	
+	
+	
+	
+	
+		//draw opponent Avatar
+		game.opponent.stayImage.draw(context, this.canvas.width-this.canvas.height*0.30, this.canvas.height*0.76, this.canvas.height*0.22);
+	
+		//draw opponent speak bubble 
+		textWidth = context.measureText(this.currentVocabulary.lang0).width;
+	
+		context.fillStyle = "#2E9AFE"
+		SpeakBubbleX = this.canvas.width-this.canvas.height*0.30-textWidth;
+		SpeakBubbleY = this.canvas.height*0.2;
+		drawSpeakBubble(context, SpeakBubbleX, SpeakBubbleY, textWidth + 40, this.canvas.width - this.canvas.height*0.20, this.canvas.height*0.90)
+		
+	
+		//write the Vocabulary you have to translate
+		context.fillStyle = "black"
+		context.font="40px Georgia";
+		context.fillText(this.currentVocabulary.lang0, SpeakBubbleX +20, SpeakBubbleY +44)
+	
+	
+	
+	
+	
+	
+		//draw you Avatar
+		game.player.stayImage.draw(context, 0, this.canvas.height/2, this.canvas.height*0.48);
+	
+		//measure the text you currently tipping
+		context.fillStyle = "black"
+		context.font="40px Georgia";
+		textWidth = Math.max(
+			context.measureText(this.currentVocabulary.lang1.toUpperCase()).width,
+			context.measureText(TipeHandler.currentText).width);
+	
+	
+	
+	
+		//draw your speak bubble
+		context.fillStyle = "#2E9AFE"
+		SpeakBubbleX = this.canvas.height*0.3;
+		SpeakBubbleY = this.canvas.height*0.4;
+		drawSpeakBubble(context, SpeakBubbleX, SpeakBubbleY, textWidth + 40, this.canvas.height*0.155, this.canvas.height*0.69)
+		
+		
+		if(game.words.VocabularyCount[this.currentVocabulary.id] == null || game.words.VocabularyCount[this.currentVocabulary.id] == 0){
+			//if it is the fist time that you have this vocable 
+			context.fillStyle = "rgba(0, 0, 0, 0.3)"
+			context.font="40px Georgia";
+			context.fillText(this.currentVocabulary.lang1.toUpperCase(), SpeakBubbleX+10, SpeakBubbleY+45)
+		}
+	
+		context.fillStyle = "black"
+		context.font="40px Georgia";
+		context.fillText(TipeHandler.currentText, SpeakBubbleX+10, SpeakBubbleY+45)
+	
+	
+	
+	
+	
+	
+		passedTime =  Date.now() - this.startTime;
+	
+		context.fillStyle = "red"
+	
+		//console.log(1-(passedTime/3000));
+	
+		context.fillRect(0, this.canvas.height-10, (1-passedTime/this.timeForVocabulary)*this.canvas.width, 10);
+	
+		if(TipeHandler.currentText.toUpperCase() == this.currentVocabulary.lang1.toUpperCase()){
+			this.winFight();
+		}else if(passedTime >= game.timeForVocabulary){
+			this.looseFight();
+		}
+	
+	}else if(this.state == state.SELECTION){
+		//the map/selection screen
+
+		this.canvas.width = window.innerWidth*2;
+		this.canvas.height = window.innerHeight*2;
+		this.canvas.style.height = "100%";//make the canvas full screen
+
+		document.getElementById("keyboard").style.visibility = "hidden";
+
+	
+		var context = this.canvas.getContext("2d");
+	
+	
+		context.fillStyle = "green"
+		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	}
-
-	context.fillStyle = "black"
-	context.font="40px Georgia";
-	context.fillText(TipeHandler.currentText, SpeakBubbleX+10, SpeakBubbleY+45)
-
-
-
-
-
-
-	passedTime =  Date.now() - this.startTime;
-
-	context.fillStyle = "red"
-
-	//console.log(1-(passedTime/3000));
-
-	context.fillRect(0, this.canvas.height-10, (1-passedTime/this.timeForVocabulary)*this.canvas.width, 10);
-
-	if(TipeHandler.currentText.toUpperCase() == this.currentVocabulary.lang1.toUpperCase()){
-		this.winFight();
-	}else if(passedTime >= game.timeForVocabulary){
-		this.looseFight();
-	}
-
 }
+
+
+game.onClick = function(x, y){
+	//at the moment just start the only level
+	//todo: actual level selection
+	if(this.state == state.SELECTION){
+		loadJson('./vocabularyList.json', function(object){
+    	game.words.loadByjsonObject(object);//load the dictionary
+    	game.start(); // start the game
+    	})
+	}
+}
+
 
 
 game.winFight = function(){
@@ -399,19 +441,25 @@ game.start = function(){
 
 	this.timeForVocabulary = Math.max(game.timePerVocabularyLetter*game.currentVocabulary.lang1.length, 4000);//set the time for the first vocabulary
 
-	timer = window.setInterval(function(){game.update()}, 100);//start the update/draw function calls
+	//just as a test put the state on playing
+	this.state = state.PLAYING
 }
 
+
+timer = window.setInterval(function(){game.update()}, 100);//start the update/draw function calls
 
 
 
 
 
 //start the game after load the vocabulary list
-loadJson("vocabulary.json", function(object){
+/*
+loadJson("./vocabularyList.json", function(object){
 	game.words.loadByjsonObject(object);//load the dictionary
 	game.start(); // start the game
 	})
+
+*/
 
 
 
