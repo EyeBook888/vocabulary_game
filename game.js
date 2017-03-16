@@ -27,7 +27,7 @@ function loadJson(file, processFunction){ // load a json file and return a Objec
 			processFunction(jsObject);
 		}
 	};
-	xhttp.open("GET", "./vocabularyList.json", true);
+	xhttp.open("GET", file, true);
 	xhttp.send();
 }
 
@@ -155,7 +155,12 @@ function testNonLaplaceRandom(arra){
 
 }
 
+function getDistance(x1, y1, x2, y2){
+	DistanceX = Math.abs(x2-x1);
+	DistanceY = Math.abs(y2-y1);
 
+	return Math.sqrt(Math.pow(DistanceX, 2) + Math.pow(DistanceY, 2));
+}
 
 
 
@@ -187,6 +192,9 @@ game.words.VocabularyCount[1] = 0;
 game.timePerVocabularyLetter = 1200;
 
 game.levelUpAnimationStartTime = 0;
+
+
+game.overworld = null;
 
 game.player = new Array();
 game.player.level = 0;
@@ -343,18 +351,53 @@ game.update = function(){
 	
 		context.fillStyle = "green"
 		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+		for(var i = 0; i < this.overworld.levels.length; i++){//draw all levels on the over world
+			context.fillStyle = "blue"
+			drawCircle(context, 
+				this.overworld.levels[i].positionX*this.canvas.width, 
+				this.overworld.levels[i].positionY*this.canvas.height,
+				Math.min(this.canvas.width*0.1, this.canvas.height*0.1))
+			
+		}
+
 	}
 }
 
 
+game.textX = 0;
+game.textY = 0;
+
 game.onClick = function(x, y){
+	//because x and y is in screen coordinates, calculate the canvas coordinates
+	x = this.canvas.width * x/window.innerWidth
+	y = this.canvas.height * y/window.innerHeight
+
+
 	//at the moment just start the only level
 	//todo: actual level selection
+
+	game.textX = x;
+	game.textY = y;
 	if(this.state == state.SELECTION){
-		loadJson('./vocabularyList.json', function(object){
-    	game.words.loadByjsonObject(object);//load the dictionary
-    	game.start(); // start the game
-    	})
+
+		for(var i = 0; i < this.overworld.levels.length; i++){//check all levels on the over world
+
+			distance = getDistance(
+				this.overworld.levels[i].positionX*this.canvas.width, 
+				this.overworld.levels[i].positionY*this.canvas.height,
+				x,
+				y)
+
+			radius = Math.min(this.canvas.width*0.1, this.canvas.height*0.1);//the radius of the circle
+
+			if(distance <= radius){//test if you tap in the circle
+				loadJson(this.overworld.levels[i].file, function(object){
+    				game.words.loadByjsonObject(object);//load the dictionary
+    				game.startLevel(); // start the game
+    			})
+			}
+		}
 	}
 }
 
@@ -433,7 +476,7 @@ game.getNextVocabulary = function(){
 
 }
 
-game.start = function(){
+game.startLevel = function(){
 	this.words.setIds();
 	this.currentVocabulary = game.words.getById(0);//load the first vocabulary
 	
@@ -445,8 +488,14 @@ game.start = function(){
 	this.state = state.PLAYING
 }
 
+game.load = function(){
+	timer = window.setInterval(function(){game.update()}, 100);//start the update/draw function calls
+	loadJson('./overworld.json', function(object){
+    	game.overworld = object;//load the over world
+  	})
+}
+game.load();
 
-timer = window.setInterval(function(){game.update()}, 100);//start the update/draw function calls
 
 
 

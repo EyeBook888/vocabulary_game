@@ -1,0 +1,15 @@
+{
+	"levels" : [
+		{
+			"positionX" : 0.5,
+			"positionY" : 0.9,
+			"file"		: "./vocabularyList.json"
+		},
+
+		{
+			"positionX" : 0.5,
+			"positionY" : 0.5,
+			"file"		: "./vocabularyList1.json"
+		}
+	]
+}
