@@ -71,15 +71,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="591.34743"
-     inkscape:cy="826.51206"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="310.96086"
+     inkscape:cy="404.87322"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1405"
      inkscape:window-height="1031"
-     inkscape:window-x="976"
+     inkscape:window-x="387"
      inkscape:window-y="0"
      inkscape:window-maximized="0" />
   <metadata
@@ -392,6 +392,45 @@
          width="11.428573"
          id="rect4087"
          style="opacity:0.98999999;fill:#ffffff;fill-opacity:1;stroke:none" />
+    </g>
+    <g
+       id="g3046"
+       transform="translate(84.852814,161.62441)"
+       style="fill:#000000;opacity:0.3"
+       inkscape:export-filename="/Applications/XAMPP/xamppfiles/htdocs/FromGithub/vocabulary_game/vocabulary_game/arrow.png"
+       inkscape:export-xdpi="349"
+       inkscape:export-ydpi="349">
+      <g
+         transform="translate(0,-236.97711)"
+         id="g3042"
+         style="fill:#000000">
+        <rect
+           style="opacity:0.98999999000000005;fill:#000000;fill-opacity:1;stroke:none"
+           id="rect3036"
+           width="17.142857"
+           height="42.857143"
+           x="731.98602"
+           y="239.38528"
+           ry="8.5714283"
+           transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" />
+        <rect
+           transform="matrix(0.70710678,-0.70710678,-0.70710678,-0.70710678,0,0)"
+           ry="8.5714283"
+           y="-775.11804"
+           x="-282.51727"
+           height="42.857143"
+           width="17.142857"
+           id="rect3038"
+           style="opacity:0.98999999000000005;fill:#000000;fill-opacity:1;stroke:none" />
+      </g>
+      <rect
+         ry="8.586297"
+         y="471.79877"
+         x="339.41125"
+         height="17.172594"
+         width="57.578693"
+         id="rect3040"
+         style="opacity:0.98999999000000005;fill:#000000;fill-opacity:1;stroke:none" />
     </g>
   </g>
 </svg>

@@ -22,6 +22,7 @@ function loadJson(file, processFunction){ // load a json file and return a Objec
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
+			//alert(this.responseText)
 			var jsonString = this.responseText;
 			var jsObject = JSON.parse( jsonString );
 			processFunction(jsObject);
@@ -172,7 +173,7 @@ var game = new Array();
 game.canvas = document.getElementById("gameDisplay");
 
 game.canvas.addEventListener('touchstart', function(event){
-					game.onClick(event.touches[0].pageX, event.touches[0].pageY)});
+					game.onClick(event.touches[0].pageX, event.touches[0].pageY)}); 
 
 
 
@@ -203,6 +204,10 @@ game.player.levelProgress = new progressBar(10);
 img = new Image();
 img.src = "./Player.png"
 game.player.stayImage = new Sprite(img)
+
+img = new Image();
+img.src = "./arrow.png"
+game.arrow = new Sprite(img)
 
 
 game.opponent = new Array();
@@ -237,22 +242,28 @@ game.update = function(){
 	
 		context.strokeStyle = "rgb(" + r + "," + g + "," + b + ")";
 		context.lineWidth = 5
-		strokeCircle(context, 30, 30, percent*300 + 30)
+		strokeCircle(context, this.canvas.width-30, 30, percent*300 + 30)
 	
 		context.strokeStyle = "black"
 	
 	
 		//draw the level background circle
 		context.fillStyle = "#2E9AFE"
-		drawCircle(context, 30, 30, 30)
+		drawCircle(context, this.canvas.width-30, 30, 30)
 	
 		context.fillStyle = "Black"
 		context.font="40px Georgia";
 		textWidth = context.measureText(this.player.level + "").width;
-		context.fillText(this.player.level, 30 - textWidth/2, 30+15)
-	
-		game.player.levelProgress.draw(context, 65, 10, this.canvas.width-70, 40);
-	
+		context.fillText(this.player.level, this.canvas.width-30 - textWidth/2, 30+15)
+
+		//draw the level progress bar
+		game.player.levelProgress.draw(context, 65, 10, this.canvas.width-130, 40);
+		
+
+		//draw the 'back to the over word' button
+		game.arrow.draw(context, 0, 10, 40);
+
+
 	
 	
 		//draw you Avatar
@@ -335,7 +346,10 @@ game.update = function(){
 		}else if(passedTime >= game.timeForVocabulary){
 			this.looseFight();
 		}
-	
+
+
+
+
 	}else if(this.state == state.SELECTION){
 		//the map/selection screen
 
@@ -362,6 +376,15 @@ game.update = function(){
 		}
 
 	}
+
+	/*
+	//debug stuff
+	context.fillStyle = "red"
+	drawCircle(context, 
+			game.textX, 
+			game.textY,
+			10)
+	*/
 }
 
 
@@ -370,9 +393,8 @@ game.textY = 0;
 
 game.onClick = function(x, y){
 	//because x and y is in screen coordinates, calculate the canvas coordinates
-	x = this.canvas.width * x/window.innerWidth
-	y = this.canvas.height * y/window.innerHeight
-
+	x = this.canvas.width * x/this.canvas.offsetWidth
+	y = this.canvas.height * y/this.canvas.offsetHeight
 
 	//at the moment just start the only level
 	//todo: actual level selection
@@ -390,13 +412,16 @@ game.onClick = function(x, y){
 				y)
 
 			radius = Math.min(this.canvas.width*0.1, this.canvas.height*0.1);//the radius of the circle
-
 			if(distance <= radius){//test if you tap in the circle
 				loadJson(this.overworld.levels[i].file, function(object){
     				game.words.loadByjsonObject(object);//load the dictionary
     				game.startLevel(); // start the game
     			})
 			}
+		}
+	}else if(this.state == state.PLAYING){
+		if(x >= 0 && x <= 40 && y >= 10 && y <= 65 ){//check if you click the Button
+			this.state = state.SELECTION
 		}
 	}
 }

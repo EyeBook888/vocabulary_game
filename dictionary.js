@@ -47,6 +47,7 @@ function dictionary(){
 	}
 
 	this.loadByjsonObject = function(object){
+		this.vocabulary = new Array();
 		for (var i = 0; i < object.words.length; i++) {
 			this.add(object.words[i][0], object.words[i][1]);
 		};
