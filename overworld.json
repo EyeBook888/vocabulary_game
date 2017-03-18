@@ -3,13 +3,33 @@
 		{
 			"positionX" : 0.5,
 			"positionY" : 0.9,
-			"file"		: "./vocabularyList.json"
+			"file"		: "./vocabularyList.json",
+			"unlockBy"	: 0,
+			"atLevel"	: -1
 		},
 
 		{
 			"positionX" : 0.5,
 			"positionY" : 0.5,
-			"file"		: "./vocabularyList1.json"
+			"file"		: "./vocabularyList1.json",
+			"unlockBy"	: 0,
+			"atLevel"	: 2
+		},
+
+		{
+			"positionX" : 0.1,
+			"positionY" : 0.2,
+			"file"		: "./vocabularyList1.json",
+			"unlockBy"	: 1,
+			"atLevel"	: 3
+		},
+
+		{
+			"positionX" : 0.9,
+			"positionY" : 0.2,
+			"file"		: "./vocabularyList1.json",
+			"unlockBy"	: 1,
+			"atLevel"	: 4
 		}
 	]
 }

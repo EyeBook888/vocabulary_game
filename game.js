@@ -34,140 +34,6 @@ function loadJson(file, processFunction){ // load a json file and return a Objec
 
 
 
-function progressBar(max){
-	this.max 	 = max;
-	this.current = 0;
-
-	this.animationTime = 700;
-	this.lastCurrent = 0;
-	this.currentDisplay = 0;//what is displayed on the screen
-	this.lastChangeTime = 0;
-
-	this.backgroundColor = "white";
-	this.color 			 = "#2E9AFE"
-
-	this.set = function(current){
-		this.lastCurrent = this.current;
-		this.current = current;
-		this.lastChangeTime = Date.now();;
-	}
-
-	this.add = function(amount){
-		this.set(this.current + amount);
-	}
-
-	this.add = function(){
-		this.set(this.current + 1);
-	}
-
-	this.draw = function(context, x, y, width, height){
-
-		pastTime = Date.now() - this.lastChangeTime;
-		pastTimePercent = Math.min(1, pastTime/this.animationTime);//how far is the animation
-
-		this.currentDisplay = this.lastCurrent + pastTimePercent*(this.current - this.lastCurrent);
-		//console.log(this.lastCurrent + "=>" + this.current)
-
-
-		if(this.currentDisplay > this.max){
-			this.currentDisplay = this.max;
-		}
-
-
-		//draw the background
-		context.lineWidth=5;
-		context.fillStyle = this.backgroundColor;
-		roundRect(context, x, y, width, height, 5, true, true)
-
-		//draw the Bar
-		context.fillStyle = this.color;
-		roundRect(context, x, y, width * (this.currentDisplay/this.max) , height, 5, true, false)
-	}
-
-}
-
-
-function Sprite(img){
-	this.fixSize = state.HEIGHT_AS_FIX_SIZE;
-	this.img = img;
-
-	this.draw = function(context, x, y, widthOrHeight){//if width is the fix size than the last value is the width, if it is the height than the last value is the height
-		if(this.fixSize == state.WIDTH_AS_FIX_SIZE){
-			width = widthOrHeight;
-			height = this.img.width/width*this.img.height;
-		}else if(this.fixSize == state.HEIGHT_AS_FIX_SIZE){
-			height = widthOrHeight;
-			width = widthOrHeight/this.img.height*this.img.width;
-		}
-
-		context.drawImage(this.img, x, y, width, height);
-	}
-
-}
-
-
-function nonLaplaceRandom(arra){//the Array contains points which says how likely this Number is
-	console.log(arra)
-	//add all point together
-	var allPoints = 0;
-	for (var i = 0; i < arra.length; i++) {
-		allPoints+=arra[i];
-	};
-
-	//get a random number under allPoints
-	randomNumber = Math.floor(Math.random()*allPoints+1);
-
-	//find out in which element is number is
-	for (var i = 0; i < arra.length; i++) {
-		randomNumber-=arra[i];
-		if(randomNumber <= 0){
-			return i;
-		}
-	};
-	alert("mist");
-	return 0;
-}
-
-state = new Array();
-state.WIDTH_AS_FIX_SIZE 	= 0;
-state.HEIGHT_AS_FIX_SIZE 	= 1;
-state.LOADING				= 2;
-state.SELECTION 			= 3;
-state.PLAYING 				= 4;
-
-
-
-function testNonLaplaceRandom(arra){
-	count = new Array(arra.length);
-	testCount = 1000;
-	for(var i = 0; i < count.length; i++){
-		count[i] = 0;
-	}
-
-	for (var i = 0; i < testCount; i++) {
-		randomId = nonLaplaceRandom(arra);
-		count[randomId]++;
-	};
-	console.log(count)
-
-	for (var i = 0; i < count.length; i++) {
-		console.log(i + ":" + (count[i]/testCount*100) + "%");
-	}
-
-}
-
-function getDistance(x1, y1, x2, y2){
-	DistanceX = Math.abs(x2-x1);
-	DistanceY = Math.abs(y2-y1);
-
-	return Math.sqrt(Math.pow(DistanceX, 2) + Math.pow(DistanceY, 2));
-}
-
-
-
-
-
-
 var game = new Array();
 
 game.canvas = document.getElementById("gameDisplay");
@@ -176,30 +42,24 @@ game.canvas.addEventListener('touchstart', function(event){
 					game.onClick(event.touches[0].pageX, event.touches[0].pageY)}); 
 
 
-
 game.words = new dictionary();
 
 game.state = state.SELECTION;
 
 
-game.words.VocabularyCount = Array();
 
-game.words.VocabularyCount[0] = 0;//unlock to more words
-game.words.VocabularyCount[1] = 0;
-//game.words.VocabularyCount[2] = 0;
-//game.words.VocabularyCount[3] = 0;
-//game.words.VocabularyCount[4] = 0;
+game.VocabularyCounters = new Array();//contains the vocabulary Counts for all Levels
+
 
 game.timePerVocabularyLetter = 1200;
 
 game.levelUpAnimationStartTime = 0;
 
-
 game.overworld = null;
 
+
 game.player = new Array();
-game.player.level = 0;
-game.player.levelProgress = new progressBar(10);
+//game.player.level = 0;
 
 img = new Image();
 img.src = "./Player.png"
@@ -214,6 +74,9 @@ game.opponent = new Array();
 img = new Image();
 img.src = "./slime.png"
 game.opponent.stayImage = new Sprite(img);
+
+
+game.levelId = null;
 
 game.update = function(){
 	if(this.state == state.PLAYING){
@@ -253,8 +116,8 @@ game.update = function(){
 	
 		context.fillStyle = "Black"
 		context.font="40px Georgia";
-		textWidth = context.measureText(this.player.level + "").width;
-		context.fillText(this.player.level, this.canvas.width-30 - textWidth/2, 30+15)
+		textWidth = context.measureText(game.VocabularyCounters[this.levelId].subLevel + "").width;
+		context.fillText(game.VocabularyCounters[this.levelId].subLevel, this.canvas.width-30 - textWidth/2, 30+15)
 
 		//draw the level progress bar
 		game.player.levelProgress.draw(context, 65, 10, this.canvas.width-130, 40);
@@ -317,7 +180,7 @@ game.update = function(){
 		drawSpeakBubble(context, SpeakBubbleX, SpeakBubbleY, textWidth + 40, this.canvas.height*0.155, this.canvas.height*0.69)
 		
 		
-		if(game.words.VocabularyCount[this.currentVocabulary.id] == null || game.words.VocabularyCount[this.currentVocabulary.id] == 0){
+		if(game.VocabularyCounters[this.levelId][this.currentVocabulary.id] == null || game.VocabularyCounters[this.levelId][this.currentVocabulary.id] == 0){
 			//if it is the fist time that you have this vocable 
 			context.fillStyle = "rgba(0, 0, 0, 0.3)"
 			context.font="40px Georgia";
@@ -366,8 +229,53 @@ game.update = function(){
 		context.fillStyle = "green"
 		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
+		for(var i = 0; i < this.overworld.levels.length; i++){//draw the lines between levels
+			unlockBy = this.overworld.levels[i].unlockBy;
+
+			if(this.isThisLevelUnlocked(i)){
+				context.fillStyle = "blue"
+					context.strokeStyle = "blue"
+			}else{
+				context.fillStyle = "gray"
+				context.strokeStyle = "gray"
+			}
+
+
+			context.lineWidth = 5
+			context.beginPath();
+			startX 	= this.overworld.levels[unlockBy].positionX*this.canvas.width;
+			startY 	= this.overworld.levels[unlockBy].positionY*this.canvas.height;
+			endX	= this.overworld.levels[i].positionX*this.canvas.width;
+			endY	= this.overworld.levels[i].positionY*this.canvas.height;
+			//start the line at Level the unlock the current level
+			context.moveTo(startX, startY)
+			//line to the center of the current circle
+			context.lineTo(endX, endY);
+			context.stroke();
+
+			//draw the level number you need for unlock the next level
+			context.font="40px Georgia";
+			textWidth = context.measureText(this.overworld.levels[i].atLevel).width
+			context.fillText(this.overworld.levels[i].atLevel, (startX+endX)/2 +textWidth +5, (startY+endY)/2)
+
+
+
+		}
+
+
 		for(var i = 0; i < this.overworld.levels.length; i++){//draw all levels on the over world
-			context.fillStyle = "blue"
+
+			if(this.isThisLevelUnlocked(i)){
+				context.fillStyle = "blue"
+					context.strokeStyle = "blue"
+			}else{
+				context.fillStyle = "gray"
+				context.strokeStyle = "gray"
+			}
+
+
+			//draw the circle
+			//todo: replace with a image
 			drawCircle(context, 
 				this.overworld.levels[i].positionX*this.canvas.width, 
 				this.overworld.levels[i].positionY*this.canvas.height,
@@ -412,13 +320,36 @@ game.onClick = function(x, y){
 				y)
 
 			radius = Math.min(this.canvas.width*0.1, this.canvas.height*0.1);//the radius of the circle
-			if(distance <= radius){//test if you tap in the circle
+			if(distance <= radius  && this.isThisLevelUnlocked(i)){//test if you tap in the circle and if the level is unlock
+				
+				//load the Level file
 				loadJson(this.overworld.levels[i].file, function(object){
     				game.words.loadByjsonObject(object);//load the dictionary
     				game.startLevel(); // start the game
-    			})
+    			});
+
+				//set the ievelId
+				game.levelId = i;
+
+				//if the player has never played the level
+
+				if(game.VocabularyCounters[this.levelId] == null){
+					game.VocabularyCounters[this.levelId] = Array();
+					game.VocabularyCounters[this.levelId][0] = 0;//unlock to more words
+					game.VocabularyCounters[this.levelId][1] = 0;
+
+
+					game.VocabularyCounters[this.levelId].subLevel = 0;//the number in the circle on the top right
+				}
+
+
+				//reset the Progress bar
+				game.player.levelProgress = new progressBar(10);
+    				
 			}
 		}
+
+
 	}else if(this.state == state.PLAYING){
 		if(x >= 0 && x <= 40 && y >= 10 && y <= 65 ){//check if you click the Button
 			this.state = state.SELECTION
@@ -430,11 +361,11 @@ game.onClick = function(x, y){
 
 game.winFight = function(){
 	//add to the Vocabulary Counter
-	if(game.words.VocabularyCount[this.currentVocabulary.id] == null){
-		game.words.VocabularyCount[this.currentVocabulary.id] = 0;
+	if(game.VocabularyCounters[this.levelId][this.currentVocabulary.id] == null){
+		game.VocabularyCounters[this.levelId][this.currentVocabulary.id] = 0;
 	}
 
-	game.words.VocabularyCount[this.currentVocabulary.id]++;
+	game.VocabularyCounters[this.levelId][this.currentVocabulary.id]++;
 
 	this.player.levelProgress.add();//level progress
 	if(this.player.levelProgress.current == this.player.levelProgress.max){
@@ -452,17 +383,17 @@ game.winFight = function(){
 game.nextLevel = function(){
 	this.player.levelProgress.set(0);
 	this.player.levelProgress.set(0);//abort the other animation
-	this.player.level++;
+	this.VocabularyCounters[this.levelId].subLevel++;
 	game.levelUpAnimationStartTime = Date.now();
 
 	//todo: better unlock routine
-	this.words.VocabularyCount[this.player.level +1] = 0;
+	this.VocabularyCounters[this.levelId][game.VocabularyCounters[this.levelId].subLevel +1] = 0;
 }
 
 game.looseFight = function(){
 	this.player.levelProgress.set(0);
 	//this.currentVocabulary 	= game.words.getRandomVocabulary();
-	game.words.VocabularyCount[this.currentVocabulary.id] = 0;
+	game.VocabularyCounters[this.levelId][this.currentVocabulary.id] = 0;
 	this.timeForVocabulary = Math.max(this.timePerVocabularyLetter*this.currentVocabulary.lang1.length, 4000);
 	TipeHandler.currentText = "";
 	game.startTime = Date.now();
@@ -473,21 +404,21 @@ game.getNextVocabulary = function(){
 
 	//basic chance
 	for (var i = 0; i < this.words.length; i++) {
-		if(this.words.VocabularyCount[i] == 0){
-			chanceList[i] = Math.round(10*(this.player.level+1));
-		}else if(this.words.VocabularyCount[i] == null){
+		if(game.VocabularyCounters[this.levelId][i] == 0){
+			chanceList[i] = Math.round(10*(this.VocabularyCounters[this.levelId].subLevel+1));
+		}else if(game.VocabularyCounters[this.levelId][i] == null){
 			chanceList[i] = 0;
 		}else{
 			chanceList[i] = 1;
 		}
 	};
-	//ask to less ask Vocabularys more often
+	//ask less ask Vocabularys more often
 	for (var i = 0; i < this.words.length; i++) {
-		if(this.words.VocabularyCount[i] != null){
+		if(game.VocabularyCounters[this.levelId][i] != null){
 			//console.log(this.words.getById(i).lang1 + " less use bonus: " +Math.min(this.words.VocabularyCount[i]/5, 1) )
 			//chanceList[i]+= Math.round((1- Math.min(this.words.VocabularyCount[i]/3, 1))*5);
-			if(this.words.VocabularyCount[i] <= 5){
-				chanceList[i]+= Math.round((this.player.level/((x+0.1)*0.5)))
+			if(game.VocabularyCounters[this.levelId][i] <= 5){
+				chanceList[i]+= Math.round((this.VocabularyCounters[this.levelId].subLevel/((x+0.1)*0.5)))
 			}
 		}
 	};
@@ -501,6 +432,22 @@ game.getNextVocabulary = function(){
 
 }
 
+
+game.isThisLevelUnlocked = function(id){
+	unlockBy = this.overworld.levels[id].unlockBy;
+	if(this.overworld.levels[id].atLevel == -1 ){//-1 means that the level is unlock from the start
+		return true;
+	}else if(game.VocabularyCounters[unlockBy] == null){//only if you already played the leve draw in blue
+		return false;
+	}else{
+		if(game.VocabularyCounters[unlockBy].subLevel < this.overworld.levels[id].atLevel){//and if the level is hight enough draw in blue
+			return false;
+		}else{
+			return true;
+		}
+	}
+}
+
 game.startLevel = function(){
 	this.words.setIds();
 	this.currentVocabulary = game.words.getById(0);//load the first vocabulary
@@ -509,7 +456,7 @@ game.startLevel = function(){
 
 	this.timeForVocabulary = Math.max(game.timePerVocabularyLetter*game.currentVocabulary.lang1.length, 4000);//set the time for the first vocabulary
 
-	//just as a test put the state on playing
+	//put the state on playing
 	this.state = state.PLAYING
 }
 
@@ -534,68 +481,4 @@ loadJson("./vocabularyList.json", function(object){
 	})
 
 */
-
-
-
-
-
-
-
-function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-  if (typeof stroke == "undefined" ) {
-    stroke = true;
-  }
-  if (typeof radius === "undefined") {
-    radius = 5;
-  }
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  if (stroke) {
-    ctx.stroke();
-  }
-  if (fill) {
-    ctx.fill();
-  }        
-}
-
-
-function drawTriangle(context, x0, y0, x1, y1, x2, y2){
-	context.beginPath();
-    context.moveTo(x0,y0);
-    context.lineTo(x1,y1);
-    context.lineTo(x2,y2);
-    context.fill();
-}
-
-function drawCircle(context, x, y, radius){
-	context.beginPath();
-	context.moveTo(x, y)
-	context.arc(x, y, radius, 0, 2 * Math.PI, false);
-	context.fill();
-}
-
-function strokeCircle(context, x, y, radius){
-	context.beginPath();
-	context.moveTo(x, y)
-	context.arc(x, y, radius, 0, 2 * Math.PI, false);
-	context.stroke();
-}
-
-function drawSpeakBubble(context, x, y, width, sourceX, sourceY){
-	
-	roundRect(context, x, y, width, 65, 15, true, false)//draw the Box
-
-	drawTriangle(context, x, y+60, x+30, y+60, sourceX, sourceY)//Draw the arrow the the character
-}
-
-
 
