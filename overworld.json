@@ -2,10 +2,11 @@
 	"levels" : [
 		{
 			"positionX" : 0.5,
-			"positionY" : 0.9,
+			"positionY" : 0.8,
 			"file"		: "./vocabularyList.json",
 			"unlockBy"	: 0,
-			"atLevel"	: -1
+			"atLevel"	: -1,
+			"name"		: "Ich"
 		},
 
 		{
@@ -13,7 +14,8 @@
 			"positionY" : 0.5,
 			"file"		: "./vocabularyList1.json",
 			"unlockBy"	: 0,
-			"atLevel"	: 2
+			"atLevel"	: 2,
+			"name"		: "Arbeit"
 		},
 
 		{
@@ -21,7 +23,8 @@
 			"positionY" : 0.2,
 			"file"		: "./vocabularyList1.json",
 			"unlockBy"	: 1,
-			"atLevel"	: 3
+			"atLevel"	: 3,
+			"name"		: "Arbeit"
 		},
 
 		{
@@ -29,7 +32,8 @@
 			"positionY" : 0.2,
 			"file"		: "./vocabularyList1.json",
 			"unlockBy"	: 1,
-			"atLevel"	: 4
+			"atLevel"	: 4,
+			"name"		: "Arbeit"
 		}
 	]
 }

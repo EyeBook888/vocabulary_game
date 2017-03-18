@@ -226,18 +226,18 @@ game.update = function(){
 		var context = this.canvas.getContext("2d");
 	
 	
-		context.fillStyle = "green"
+		context.fillStyle = "white"
 		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
 		for(var i = 0; i < this.overworld.levels.length; i++){//draw the lines between levels
 			unlockBy = this.overworld.levels[i].unlockBy;
 
 			if(this.isThisLevelUnlocked(i)){
-				context.fillStyle = "blue"
-					context.strokeStyle = "blue"
+				context.fillStyle = "#2E9AFE"
+					context.strokeStyle = "#2E9AFE"
 			}else{
-				context.fillStyle = "gray"
-				context.strokeStyle = "gray"
+				context.fillStyle = "rgba(200, 200, 200, 1)"
+				context.strokeStyle = "rgba(200, 200, 200, 1)"
 			}
 
 
@@ -265,21 +265,37 @@ game.update = function(){
 
 		for(var i = 0; i < this.overworld.levels.length; i++){//draw all levels on the over world
 
+			
 			if(this.isThisLevelUnlocked(i)){
-				context.fillStyle = "blue"
-					context.strokeStyle = "blue"
+				context.fillStyle = "#2E9AFE"
+					context.strokeStyle = "#2E9AFE"
 			}else{
-				context.fillStyle = "gray"
-				context.strokeStyle = "gray"
+				context.fillStyle = "rgba(200, 200, 200, 1)"
+				context.strokeStyle = "rgba(200, 200, 200, 1)"
 			}
 
 
 			//draw the circle
 			//todo: replace with a image
-			drawCircle(context, 
-				this.overworld.levels[i].positionX*this.canvas.width, 
-				this.overworld.levels[i].positionY*this.canvas.height,
-				Math.min(this.canvas.width*0.1, this.canvas.height*0.1))
+			CircleX = this.overworld.levels[i].positionX*this.canvas.width;
+			CircleY = this.overworld.levels[i].positionY*this.canvas.height
+			drawCircle(context, CircleX, CircleY, Math.min(this.canvas.width*0.1, this.canvas.height*0.1))
+
+
+			//write the level in the circle
+			if(game.VocabularyCounters[i] != null){
+				context.fillStyle = "black"
+				context.font="50px Georgia";
+				textWidth = context.measureText(game.VocabularyCounters[i].subLevel).width
+				context.fillText(game.VocabularyCounters[i].subLevel, CircleX -textWidth/2, CircleY +22)
+			}
+
+			//write the name of the Level	
+			context.fillStyle = "black"
+			context.font="40px Georgia";
+			textWidth = context.measureText(this.overworld.levels[i].name).width
+			context.fillText(this.overworld.levels[i].name, CircleX -textWidth/2, CircleY +Math.min(this.canvas.width*0.1, this.canvas.height*0.1) +30)
+			
 			
 		}
 
