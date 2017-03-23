@@ -268,7 +268,7 @@ game.update = function(){
 			
 			if(this.isThisLevelUnlocked(i)){
 				context.fillStyle = "#2E9AFE"
-					context.strokeStyle = "#2E9AFE"
+				context.strokeStyle = "#2E9AFE"
 			}else{
 				context.fillStyle = "rgba(200, 200, 200, 1)"
 				context.strokeStyle = "rgba(200, 200, 200, 1)"
@@ -290,11 +290,20 @@ game.update = function(){
 				context.fillText(game.VocabularyCounters[i].subLevel, CircleX -textWidth/2, CircleY +22)
 			}
 
-			//write the name of the Level	
+
+			// Draw the Level name
+			var textWidth 	= context.measureText(this.overworld.levels[i].name).width
+			var x 			= CircleX -textWidth/2;
+			var y 			= CircleY +Math.min(this.canvas.width*0.1, this.canvas.height*0.1) +10;
+
+			//draw the Box around the level name
+			context.fillStyle = "#2E9AFE"
+			roundRect(context, x-5, y-42, textWidth+10, 53, 10, true, false)
+
+			//write the name of the Level
 			context.fillStyle = "black"
 			context.font="40px Georgia";
-			textWidth = context.measureText(this.overworld.levels[i].name).width
-			context.fillText(this.overworld.levels[i].name, CircleX -textWidth/2, CircleY +Math.min(this.canvas.width*0.1, this.canvas.height*0.1) +30)
+			context.fillText(this.overworld.levels[i].name, x, y)
 			
 			
 		}
