@@ -229,6 +229,8 @@ game.update = function(){
 		context.fillStyle = "white"
 		context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
+
+		//draw the lines
 		for(var i = 0; i < this.overworld.levels.length; i++){//draw the lines between levels
 			unlockBy = this.overworld.levels[i].unlockBy;
 
@@ -292,19 +294,25 @@ game.update = function(){
 
 
 			// Draw the Level name
+			context.font="40px Georgia"; // set the right text size for the level name
 			var textWidth 	= context.measureText(this.overworld.levels[i].name).width
 			var x 			= CircleX -textWidth/2;
 			var y 			= CircleY +Math.min(this.canvas.width*0.1, this.canvas.height*0.1) +10;
 
 			//draw the Box around the level name
-			context.fillStyle = "#2E9AFE"
+			if(this.isThisLevelUnlocked(i)){
+				context.fillStyle = "#2E9AFE"
+				context.strokeStyle = "#2E9AFE"
+			}else{
+				context.fillStyle = "rgba(200, 200, 200, 1)"
+				context.strokeStyle = "rgba(200, 200, 200, 1)"
+			}
 			roundRect(context, x-5, y-42, textWidth+10, 53, 10, true, false)
 
 			//write the name of the Level
 			context.fillStyle = "black"
 			context.font="40px Georgia";
 			context.fillText(this.overworld.levels[i].name, x, y)
-			
 			
 		}
 
