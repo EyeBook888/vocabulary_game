@@ -1,0 +1,33 @@
+{	
+	"knownLanguage" : "de",
+	"toLearnLanguage" : "en",
+	"words":[
+			["Vater", "father"],
+			["Mutter", "mother"],
+			["Elternteil", "parent"],
+			["Eltern", "parents"],
+			["Kind", "child"],
+			["Kinder", "children"],
+			["Sohn", "son"],
+			["Tochter", "daughter"],
+			["Bruder", "brother"],
+			["Schwester", "sister"],
+			["Großvater", "grandfather"],
+			["Opa", "granddad"],
+			["Großmutter", "grandmother"],
+			["Oma", "grandma"],
+			["kündigen", "to quit"],
+			["Cousin, Cousine", "cousin"],
+			["Ehefrau", "wife"],
+			["Ehemann", "husband"],
+			["Enkel", "grandchild"],
+			["Enkelsohn", "grandson"],
+			["Enkeltochter", "granddaughter"],
+			["Großmutter", "grandmother"],
+			["Großvater", "grandfather"],
+			["Kind", "child"],
+			["Cousin, Cousine", "cousin"],
+			["Großvater", "grandfather"]
+
+		]
+}

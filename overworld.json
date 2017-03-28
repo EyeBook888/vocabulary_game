@@ -6,34 +6,25 @@
 			"file"		: "./vocabularyList.json",
 			"unlockBy"	: 0,
 			"atLevel"	: -1,
-			"name"		: "Ich"
+			"name"		: "Anfang"
 		},
 
 		{
-			"positionX" : 0.5,
-			"positionY" : 0.5,
+			"positionX" : 0.3,
+			"positionY" : 0.4,
 			"file"		: "./vocabularyList1.json",
 			"unlockBy"	: 0,
-			"atLevel"	: 2,
+			"atLevel"	: 8,
 			"name"		: "Arbeit"
 		},
 
-		{
-			"positionX" : 0.1,
-			"positionY" : 0.2,
-			"file"		: "./vocabularyList1.json",
+				{
+			"positionX" : 0.8,
+			"positionY" : 0.1,
+			"file"		: "./vocabularyList2.json",
 			"unlockBy"	: 1,
-			"atLevel"	: 3,
-			"name"		: "Arbeit"
-		},
-
-		{
-			"positionX" : 0.9,
-			"positionY" : 0.2,
-			"file"		: "./vocabularyList1.json",
-			"unlockBy"	: 1,
-			"atLevel"	: 4,
-			"name"		: "Arbeit"
+			"atLevel"	: 5,
+			"name"		: "Familie"
 		}
 	]
 }

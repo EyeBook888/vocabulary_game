@@ -16,18 +16,6 @@
 			["Lebenslauf", "CV"],
 			["Vorstellungsgespräch", "job interview"],
 			["arbeitslos sein", "to be unemployed"],
-			["kündigen", "to quit"],
-			["Cousin, Cousine", "cousin"],
-			["Ehefrau", "wife"],
-			["Ehemann", "husband"],
-			["Eltern", "parents"],
-			["Enkel", "grandchild"],
-			["Enkelsohn", "grandson"],
-			["Enkeltochter", "granddaughter"],
-			["Großmutter", "grandmother"],
-			["Großvater", "grandfather"],
-			["Kind", "child"],
-			["Kinder", "children"],
-			["Mutter", "mother"]
+			["kündigen", "to quit"]
 		]
 }
